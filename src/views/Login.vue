@@ -25,7 +25,12 @@
           :class="{invalid: ($v.password.$dirty && !$v.password.required) || ($v.password.$dirty && !$v.password.minLength)}"
         />
         <label for="password">Пароль</label>
-        <small class="helper-text invalid">Password</small>
+        <small class="helper-text invalid"
+        v-if="$v.password.$dirty && !$v.password.required">
+        Введите пароль</small>
+        <small class="helper-text invalid"
+        v-else-if="($v.password.$dirty && !$v.password.minLength)">
+        Пароль должен содержать не мнее {{ $v.password.$params.minLength.min}} символов</small>
       </div>
     </div>
     <div class="card-action">
@@ -56,7 +61,7 @@ export default {
   }),
   validations: {
     email: {email, required},
-    password: {required, minLength: minLength(6)}
+    password: {required, minLength: minLength(5)}
   },
   methods: {
     submitHendler () {
@@ -64,6 +69,11 @@ export default {
         this.$v.$touch()
         return
       }
+      const formData = {
+        email: this.email,
+        password: this.password
+      }
+      console.log(formData)
       this.$router.push('/')
     }
   }
